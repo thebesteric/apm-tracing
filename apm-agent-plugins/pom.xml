@@ -2,7 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>io.github.thebesteric.framework.apm</groupId>
         <artifactId>apm-tracing</artifactId>
@@ -11,11 +13,24 @@
 
     <groupId>io.github.thebesteric.framework.apm.agent.plugins</groupId>
     <artifactId>apm-agent-plugins</artifactId>
+    <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <modules>
+        <module>spring-plugins</module>
+        <module>mysql-plugins</module>
+        <module>apm-tracing-annotation-plugin</module>
+        <module>apache-http-client-plugin</module>
+        <module>okhttp3-plugin</module>
+        <module>feign-plugin</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.thebesteric.framework.apm</groupId>
+            <artifactId>apm-agent-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

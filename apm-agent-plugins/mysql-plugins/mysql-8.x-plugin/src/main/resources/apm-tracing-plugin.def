@@ -1,0 +1,1 @@
+mysql-8.x=io.github.thebesteric.framework.apm.agent.plugins.mysql.MySQL8Instrumentation

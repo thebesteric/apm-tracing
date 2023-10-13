@@ -1,0 +1,1 @@
+mysql-5.x=io.github.thebesteric.framework.apm.agent.plugins.mysql.MySQL5Instrumentation

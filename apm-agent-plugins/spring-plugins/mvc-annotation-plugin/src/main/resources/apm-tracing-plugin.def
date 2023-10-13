@@ -1,0 +1,2 @@
+spring-mvc=io.github.thebesteric.framework.apm.agent.plugins.spring.ControllerInstrumentation
+spring-mvc=io.github.thebesteric.framework.apm.agent.plugins.spring.RestControllerInstrumentation

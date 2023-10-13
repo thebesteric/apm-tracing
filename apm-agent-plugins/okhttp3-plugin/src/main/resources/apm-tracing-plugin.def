@@ -1,0 +1,1 @@
+okhttp3=io.github.thebesteric.framework.apm.agent.plugins.OkHttp3Instrument

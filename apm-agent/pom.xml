@@ -2,7 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>io.github.thebesteric.framework.apm</groupId>
         <artifactId>apm-tracing</artifactId>
@@ -11,10 +13,87 @@
 
     <artifactId>apm-agent</artifactId>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.thebesteric.framework.apm</groupId>
+            <artifactId>apm-agent-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 结构定制化的打包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifestEntries>
+                            <!-- 指定 premain 方法所在的类，会自动创建 MANIFEST.MF 写入 Jar 文件中 -->
+                            <Premain-Class>io.github.thebesteric.framework.apm.agent.ApmAgent</Premain-Class>
+                            <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                            <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>one_jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- 拷贝 jar 到指定目录 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <!-- 在 clean 阶段，删除 apm-agent-dist 目录 -->
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo message="Delete dist dir"/>
+                                <delete dir="${project.basedir}/../apm-agent-dist" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <!-- 在 package 阶段，创建目录，并拷贝文件 -->
+                    <execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo message="Copy package to dist dir"/>
+                                <mkdir dir="${project.basedir}/../apm-agent-dist" />
+                                <copy file="${project.build.directory}/apm-agent-${project.version}-jar-with-dependencies.jar"
+                                      tofile="${project.basedir}/../apm-agent-dist/apm-agent-${project.version}-jar-with-dependencies.jar"
+                                      overwrite="true" />
+                                <mkdir dir="${project.basedir}/../apm-agent-dist/plugins" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

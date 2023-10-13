@@ -1,0 +1,1 @@
+apache-http-client=io.github.thebesteric.framework.apm.agent.plugins.ApacheHttpClientInstrument

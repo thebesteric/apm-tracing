@@ -10,6 +10,7 @@
 
     <name>apm-tracing</name>
     <url>https://github.com/thebesteric/apm-tracing</url>
+    <description>A powerful and flexible web apm toolkit plug-in</description>
 
     <licenses>
         <license>
@@ -29,6 +30,8 @@
         <module>apm-agent</module>
         <module>apm-agent-core</module>
         <module>apm-agent-plugins</module>
+        <module>apm-agent-extension</module>
+        <module>apm-agent-commons</module>
     </modules>
 
     <developers>
@@ -53,6 +56,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
         <lombok.version>1.18.30</lombok.version>
+        <bytebuddy.version>1.14.8</bytebuddy.version>
+        <slf4j.version>2.0.9</slf4j.version>
+        <jackson.version>2.15.2</jackson.version>
+        <commons.lang3.version>3.13.0</commons.lang3.version>
+        <commons.io.version>2.13.0</commons.io.version>
+        <commons.collections4.version>4.4</commons.collections4.version>
+        <junit.jupiter.version>5.10.0</junit.jupiter.version>
     </properties>
 
     <dependencies>
@@ -60,25 +70,31 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.14.8</version>
+            <version>${bytebuddy.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.13.0</version>
+            <version>${commons.lang3.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.13.0</version>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons.collections4.version}</version>
         </dependency>
 
         <dependency>
@@ -88,9 +104,27 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.10.0</version>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
 

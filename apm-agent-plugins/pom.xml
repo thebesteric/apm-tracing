@@ -8,7 +8,7 @@
     <parent>
         <groupId>io.github.thebesteric.framework.apm</groupId>
         <artifactId>apm-tracing</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>io.github.thebesteric.framework.apm.agent.plugins</groupId>

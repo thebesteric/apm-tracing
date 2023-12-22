@@ -28,7 +28,7 @@ https://central.sonatype.com/artifact/io.github.thebesteric.framework.apm/apm-ag
     <version>{version}</version>
 </dependency>
 ```
-Done, you can now use `@ApmTracing` to modify the classes and methods that need logging
+Done, you can now use `@ApmTracing` annotation to on the class and method that need logging
 ```java
 @RestController
 @RequestMapping("/hello")

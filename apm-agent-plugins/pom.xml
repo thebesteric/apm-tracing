@@ -28,7 +28,7 @@
         <dependency>
             <groupId>io.github.thebesteric.framework.apm</groupId>
             <artifactId>apm-agent-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

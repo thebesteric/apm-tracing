@@ -225,6 +225,7 @@
                     <encoding>utf8</encoding>
                     <compilerArgs>
                         <arg>-parameters</arg>
+                        <arg>--add-exports=java.base/java.lang.reflect=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

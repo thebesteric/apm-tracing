@@ -12,5 +12,6 @@
     </parent>
 
     <artifactId>feign-plugin</artifactId>
+    <version>1.0.1</version>
 
 </project>

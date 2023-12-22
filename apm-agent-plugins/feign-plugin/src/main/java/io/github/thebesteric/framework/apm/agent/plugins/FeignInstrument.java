@@ -21,12 +21,12 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class FeignInstrument extends ClassEnhancePluginDefine {
 
-    // private static final String FEIGN_CLASS = "feign.SynchronousMethodHandler";
-    private static final String FEIGN_CLASS = "feign.ReflectiveFeign$FeignInvocationHandler";
+    private static final String FEIGN_REFLECTIVE_CLASS = "feign.ReflectiveFeign$FeignInvocationHandler";
+    private static final String FEIGN_SYNCHRONOUS_METHOD_HANDLER_CLASS = "feign.SynchronousMethodHandler";
 
     @Override
     protected ClassMatcher enhanceClass() {
-        return MultiClassNameMatcher.byClassNames(FEIGN_CLASS);
+        return MultiClassNameMatcher.byClassNames(FEIGN_REFLECTIVE_CLASS, FEIGN_SYNCHRONOUS_METHOD_HANDLER_CLASS);
     }
 
     @Override

@@ -22,10 +22,11 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 public class OkHttp3Instrument extends ClassEnhancePluginDefine {
 
     public static final String OK_HTTP3_CLASS = "okhttp3.RealCall";
+    public static final String OK_HTTP3_INTERNAL_CLASS = "okhttp3.internal.connection.RealCall";
 
     @Override
     protected ClassMatcher enhanceClass() {
-        return MultiClassNameMatcher.byClassNames(OK_HTTP3_CLASS);
+        return MultiClassNameMatcher.byClassNames(OK_HTTP3_CLASS, OK_HTTP3_INTERNAL_CLASS);
     }
 
     @Override

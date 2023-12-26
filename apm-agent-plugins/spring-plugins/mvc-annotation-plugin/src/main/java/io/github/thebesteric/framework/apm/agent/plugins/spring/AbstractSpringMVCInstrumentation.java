@@ -2,9 +2,9 @@ package io.github.thebesteric.framework.apm.agent.plugins.spring;
 
 
 import io.github.thebesteric.framework.apm.agent.core.enhance.ClassEnhancePluginDefine;
-import io.github.thebesteric.framework.apm.agent.core.point.ConstructorMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.InstanceMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.StaticMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.ConstructorMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.InstanceMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.StaticMethodsInterceptorPoint;
 import io.github.thebesteric.framework.apm.agent.plugins.spring.interceptor.SpringMVCInterceptor;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;

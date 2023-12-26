@@ -29,6 +29,7 @@ public class PluginBootstrap {
      * @since 2023/9/21 13:30
      */
     public List<AbstractClassEnhancePluginDefine> loadPlugins() {
+        // 初始化类加载器
         ApmAgentClassLoader.initDefaultLoader();
 
         List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<>();

@@ -1,5 +1,7 @@
 package io.github.thebesteric.framework.apm.agent.core.plugin;
 
+import lombok.Getter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.util.List;
  * @version v1.0
  * @since 2023-09-22 11:14:23
  */
+@Getter
 public enum PluginConfig {
 
     INSTANCE;
@@ -39,10 +42,6 @@ public enum PluginConfig {
                 pluginDefines.add(pluginDefine);
             }
         }
-    }
-
-    public List<PluginDefine> getPluginDefines() {
-        return pluginDefines;
     }
 
 }

@@ -1,6 +1,7 @@
 package io.github.thebesteric.framework.apm.agent.plugins.interceptor;
 
 import io.github.thebesteric.framework.apm.agent.commons.DurationWatcher;
+import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
 import io.github.thebesteric.framework.apm.agent.commons.LoggerPrinter;
 import io.github.thebesteric.framework.apm.agent.commons.constant.Level;
 import io.github.thebesteric.framework.apm.agent.commons.domain.ApmHttpServletRequest;
@@ -11,8 +12,7 @@ import io.github.thebesteric.framework.apm.agent.commons.domain.log.ExtendDynami
 import io.github.thebesteric.framework.apm.agent.commons.domain.log.HttpLog;
 import io.github.thebesteric.framework.apm.agent.commons.util.WebUtils;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
-import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * @since 2023-10-11 11:55:34
  */
 @Slf4j
-public class ApacheHttpClientInterceptor implements InstanceMethodsInterceptor {
+public class ApacheHttpClientInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes) {
         String watcherTag = DurationWatcher.start();

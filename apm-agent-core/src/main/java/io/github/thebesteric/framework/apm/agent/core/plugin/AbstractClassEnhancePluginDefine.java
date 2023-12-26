@@ -3,9 +3,9 @@ package io.github.thebesteric.framework.apm.agent.core.plugin;
 import io.github.thebesteric.framework.apm.agent.commons.LoggerPrinter;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhanceContext;
 import io.github.thebesteric.framework.apm.agent.core.matcher.ClassMatcher;
-import io.github.thebesteric.framework.apm.agent.core.point.ConstructorMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.InstanceMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.StaticMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.ConstructorMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.InstanceMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.StaticMethodsInterceptorPoint;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -20,8 +20,10 @@ import net.bytebuddy.dynamic.DynamicType;
 @Slf4j
 public abstract class AbstractClassEnhancePluginDefine {
 
-    // 新属性名称
-    public static final String CONTEXT_ATTR_NAME = "_$EnhancedClassField$_";
+    /**
+     * 为匹配到的字节码，新增的扩展属性名称
+     */
+    public static final String CONTEXT_EXTEND_ATTR_NAME = "_$EnhancedClassExtendField$_";
 
     /**
      * 获取当前插件要增强的类
@@ -81,7 +83,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         // 开发增强方法
         DynamicType.Builder<?> newBuilder = this.enhance(builder, typeDescription, classLoader, enhanceContext);
 
-        // 设置为已经进行增强处理
+        // 设置增强处理完成
         enhanceContext.initializationStageCompleted();
 
         LoggerPrinter.debug(log, "End {} enhanced {}", pluginDefineName, typeName);
@@ -100,9 +102,9 @@ public abstract class AbstractClassEnhancePluginDefine {
     /**
      * 增强静态方法
      *
-     * @param builder
-     * @param typeDescription
-     * @param classLoader
+     * @param builder         builder
+     * @param typeDescription typeDescription
+     * @param classLoader     classLoader
      * @return Builder<?>
      * @author wangweijun
      * @since 2023/9/20 00:36
@@ -113,14 +115,15 @@ public abstract class AbstractClassEnhancePluginDefine {
     /**
      * 增强实例方法和构造方法
      *
-     * @param builder
-     * @param typeDescription
-     * @param classLoader
-     * @param enhanceContext
+     * @param builder         builder
+     * @param typeDescription typeDescription
+     * @param classLoader     classLoader
+     * @param enhanceContext  enhanceContext
      * @return Builder<?>
      * @author wangweijun
      * @since 2023/9/20 00:37
      */
     protected abstract DynamicType.Builder<?> enhanceInstance(DynamicType.Builder<?> builder,
-                                                              TypeDescription typeDescription, ClassLoader classLoader, EnhanceContext enhanceContext);
+                                                              TypeDescription typeDescription, ClassLoader classLoader,
+                                                              EnhanceContext enhanceContext);
 }

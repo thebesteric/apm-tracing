@@ -21,13 +21,13 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class MultiClassAnnotationNameMatcher implements IndirectMatcher {
 
-    private final List<String> annotationNames;
+    private final List<String> needMatchAnnotationNames;
 
-    private MultiClassAnnotationNameMatcher(String[] annotationNames) {
-        if (annotationNames == null) {
-            throw new IllegalArgumentException("annotation names cannot be null");
+    private MultiClassAnnotationNameMatcher(String[] needMatchAnnotationNames) {
+        if (needMatchAnnotationNames == null) {
+            throw new IllegalArgumentException("Need match annotation names cannot be null");
         }
-        this.annotationNames = Arrays.asList(annotationNames);
+        this.needMatchAnnotationNames = Arrays.asList(needMatchAnnotationNames);
     }
 
     /**
@@ -41,7 +41,7 @@ public class MultiClassAnnotationNameMatcher implements IndirectMatcher {
     @Override
     public ElementMatcher.Junction<? super TypeDescription> buildJunction() {
         ElementMatcher.Junction<TypeDescription> junction = null;
-        for (String annotationName : annotationNames) {
+        for (String annotationName : needMatchAnnotationNames) {
             if (junction == null) {
                 junction = isAnnotatedWith(named(annotationName));
             } else {
@@ -53,7 +53,7 @@ public class MultiClassAnnotationNameMatcher implements IndirectMatcher {
 
     /**
      * 是否匹配
-     * annotationNames["@Anno1", "@Anno2"]
+     * 如果：annotationNames["@Anno1", "@Anno2"]
      * typeDescription["@Anno1", "@Anno2", "@Anno3"]: 匹配
      * typeDescription["@Anno1", "@Anno3"]: 不匹配
      *
@@ -64,7 +64,7 @@ public class MultiClassAnnotationNameMatcher implements IndirectMatcher {
      */
     @Override
     public boolean isMatch(TypeDescription typeDescription) {
-        List<String> annotationList = new ArrayList<>(annotationNames);
+        List<String> annotationList = new ArrayList<>(needMatchAnnotationNames);
         // 获取类上的注解
         AnnotationList declaredAnnotations = typeDescription.getDeclaredAnnotations();
         for (AnnotationDescription declaredAnnotation : declaredAnnotations) {
@@ -74,7 +74,7 @@ public class MultiClassAnnotationNameMatcher implements IndirectMatcher {
         return annotationList.isEmpty();
     }
 
-    public static IndirectMatcher byClassAnnotationNames(String... annotationNames) {
-        return new MultiClassAnnotationNameMatcher(annotationNames);
+    public static IndirectMatcher byClassAnnotationNames(String... needMatchAnnotationNames) {
+        return new MultiClassAnnotationNameMatcher(needMatchAnnotationNames);
     }
 }

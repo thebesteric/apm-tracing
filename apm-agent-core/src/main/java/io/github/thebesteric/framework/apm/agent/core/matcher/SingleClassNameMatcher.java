@@ -1,6 +1,7 @@
 package io.github.thebesteric.framework.apm.agent.core.matcher;
 
 import lombok.Getter;
+import net.bytebuddy.description.type.TypeDescription;
 
 /**
  * 类名匹配器：仅适用于 ElementMatchers.named(xxx) 的情况
@@ -10,18 +11,29 @@ import lombok.Getter;
  * @since 2023-09-19 00:30:16
  */
 @Getter
-public class SingleClassNameMatcher implements ClassMatcher {
+public class SingleClassNameMatcher implements NameMatch {
 
-    private final String className;
+    // 类的全限定名
+    private final String needMatchClassName;
 
-    private SingleClassNameMatcher(String className) {
-        if (className == null || className.isEmpty()) {
-            throw new IllegalArgumentException("class name cannot be null");
+    private SingleClassNameMatcher(String needMatchClassName) {
+        if (needMatchClassName == null || needMatchClassName.isEmpty()) {
+            throw new IllegalArgumentException("Need match class name cannot be null");
         }
-        this.className = className;
+        this.needMatchClassName = needMatchClassName;
     }
 
-    public static SingleClassNameMatcher byClassName(String className) {
-        return new SingleClassNameMatcher(className);
+    public static SingleClassNameMatcher byClassName(String needMatchClassName) {
+        return new SingleClassNameMatcher(needMatchClassName);
+    }
+
+    @Override
+    public boolean isMatch(TypeDescription typeDescription) {
+        return needMatchClassName.equals(typeDescription.getTypeName());
+    }
+
+    @Override
+    public String getClassName() {
+        return this.needMatchClassName;
     }
 }

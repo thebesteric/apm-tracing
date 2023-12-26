@@ -89,7 +89,7 @@ public class IdentifierContext {
         if (chains.size() <= 1) {
             return null;
         }
-        return chains.get(chains.size() - 2);
+        return chains.get(chains.size() - 1);
     }
 
 

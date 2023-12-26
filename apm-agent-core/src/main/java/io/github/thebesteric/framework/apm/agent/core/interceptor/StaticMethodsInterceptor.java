@@ -1,55 +1,76 @@
 package io.github.thebesteric.framework.apm.agent.core.interceptor;
 
-import io.github.thebesteric.framework.apm.agent.core.interceptor.support.InstanceMethodLogSupport;
+import io.github.thebesteric.framework.apm.agent.commons.LoggerPrinter;
+import io.github.thebesteric.framework.apm.agent.core.loader.InterceptorInstanceLoader;
+import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 
 /**
- * 静态方法的的拦截器必须实现这个接口
+ * 静态方法拦截器
  *
  * @author wangweijun
- * @version v1.0
- * @since 2023-09-20 00:53:26
+ * @since 2023/9/20 01:05
  */
-public interface StaticMethodsInterceptor extends InstanceMethodLogSupport {
+@Slf4j
+public class StaticMethodsInterceptor {
+
+    private StaticMethodsAroundInterceptor staticMethodsAroundInterceptor;
 
     /**
-     * 前置通知
+     * 构造方法
      *
-     * @param clazz    类
-     * @param method   方法
-     * @param args     参数
-     * @param argTypes 参数类型
+     * @param interceptor StaticMethodsAroundInterceptor 的实现类
+     * @param classLoader 类加载器
      * @author wangweijun
-     * @since 2023/9/20 01:10
+     * @since 2023/9/21 00:24
      */
-    void beforeMethod(Class<?> clazz, Method method, Object[] args, Class<?>[] argTypes);
+    public StaticMethodsInterceptor(String interceptor, ClassLoader classLoader) {
+        try {
+            staticMethodsAroundInterceptor = InterceptorInstanceLoader.load(interceptor, classLoader);
+        } catch (Exception e) {
+            LoggerPrinter.error(log, "Cannot load interceptor: {}", interceptor, e);
+        }
+    }
 
-    /**
-     * 后置通知，无论是否出现异常都会执行
-     *
-     * @param clazz    类
-     * @param method   方法
-     * @param args     参数
-     * @param argTypes 参数类型
-     * @param result   返回值
-     * @return Object
-     * @author wangweijun
-     * @since 2023/9/20 01:10
-     */
-    Object afterMethod(Class<?> clazz, Method method, Object[] args, Class<?>[] argTypes, Object result);
+    @RuntimeType
+    public Object intercept(@Origin Class<?> clazz,
+                            @Origin Method targetMethod,
+                            @AllArguments Object[] targetMethodArgs,
+                            @SuperCall Callable<?> call) throws Throwable {
+        // 前置通知
+        try {
+            staticMethodsAroundInterceptor.beforeMethod(clazz, targetMethod, targetMethodArgs, targetMethod.getParameterTypes());
+        } catch (Exception ex) {
+            LoggerPrinter.error(log, "Class {} before static method {} interceptor failure", clazz, targetMethod.getName(), ex);
+        }
 
-    /**
-     * 前置通知
-     *
-     * @param clazz     类
-     * @param method    方法
-     * @param args      参数
-     * @param argTypes  参数类型
-     * @param result    返回值
-     * @param throwable 异常
-     * @author wangweijun
-     * @since 2023/9/20 01:10
-     */
-    void handleException(Class<?> clazz, Method method, Object[] args, Class<?>[] argTypes, Object result, Throwable throwable);
+        Object result = null;
+        try {
+            result = call.call();
+        } catch (Exception e) {
+            // 异常通知
+            try {
+                staticMethodsAroundInterceptor.handleException(clazz, targetMethod, targetMethodArgs, targetMethod.getParameterTypes(), result, e);
+            } catch (Exception ex) {
+                LoggerPrinter.error(log, "Class {} execute static method {} interceptor failure", clazz, targetMethod.getName(), ex);
+            }
+            throw e;
+        } finally {
+            // 最终通知
+            try {
+                result = staticMethodsAroundInterceptor.afterMethod(clazz, targetMethod, targetMethodArgs, targetMethod.getParameterTypes(), result);
+            } catch (Exception ex) {
+                LoggerPrinter.error(log, "Class {} after static method {} interceptor failure", clazz, targetMethod.getName(), ex);
+            }
+        }
+
+        return result;
+    }
+
 }

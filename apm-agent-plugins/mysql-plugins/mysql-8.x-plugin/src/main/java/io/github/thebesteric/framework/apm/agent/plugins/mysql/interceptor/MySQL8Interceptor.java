@@ -7,7 +7,7 @@ import io.github.thebesteric.framework.apm.agent.commons.domain.log.ExtendDynami
 import io.github.thebesteric.framework.apm.agent.commons.domain.log.InvokeLog;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
 import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  * @since 2023-09-25 17:37:17
  */
 @Slf4j
-public class MySQL8Interceptor implements InstanceMethodsInterceptor {
+public class MySQL8Interceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes) {
         String watcherTag = DurationWatcher.start();

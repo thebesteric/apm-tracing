@@ -29,7 +29,7 @@ public class ApmAgentClassLoader extends ClassLoader {
 
     private static final String JAR_FILE_PREFIX = "jar:file:";
 
-    // 用于加载插件的定义相关的类，除了插件的 interceptor，如：MySQLInstrumentation
+    // 用于加载插件的定义相关的类，如：MySQLInstrumentation（不包括插件的 interceptor）
     private static ApmAgentClassLoader defaultClassLoader;
 
     // 自定义加载器加载的路径
@@ -82,7 +82,7 @@ public class ApmAgentClassLoader extends ClassLoader {
                 byte[] bytes = IOUtils.toByteArray(url);
                 return defineClass(name, bytes, 0, bytes.length);
             } catch (Exception e) {
-                LoggerPrinter.error(log, "find class {} error", name, e);
+                LoggerPrinter.error(log, "Find class {} error", name, e);
             }
         }
         throw new ClassNotFoundException("Cannot find class: " + path);
@@ -172,6 +172,5 @@ public class ApmAgentClassLoader extends ClassLoader {
         private final JarFile jarFile;
         // Jar 文件对象
         private final File sourceFile;
-
     }
 }

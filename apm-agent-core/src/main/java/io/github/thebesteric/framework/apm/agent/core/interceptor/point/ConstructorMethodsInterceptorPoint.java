@@ -1,16 +1,16 @@
-package io.github.thebesteric.framework.apm.agent.core.point;
+package io.github.thebesteric.framework.apm.agent.core.interceptor.point;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
 /**
- * 实例方法拦截点
+ * 构造方法拦截点
  *
  * @author wangweijun
  * @version v1.0
  * @since 2023-09-19 00:08:39
  */
-public interface InstanceMethodsInterceptorPoint {
+public interface ConstructorMethodsInterceptorPoint {
 
     /**
      * 要拦截哪些方法
@@ -19,15 +19,15 @@ public interface InstanceMethodsInterceptorPoint {
      * @author wangweijun
      * @since 2023/9/19 00:12
      */
-    ElementMatcher<MethodDescription> getMethodMatcher();
+    ElementMatcher<MethodDescription> getConstructorMatcher();
 
     /**
-     * 获取被增强的方法的拦截器，必须实现 InstanceMethodsInterceptor
+     * 获取被增强的方法的拦截器，必须实现 ConstructorInterceptor
      *
      * @return String
      * @author wangweijun
      * @since 2023/9/19 00:15
      */
-    String getMethodInterceptor();
+    String getConstructorInterceptor();
 
 }

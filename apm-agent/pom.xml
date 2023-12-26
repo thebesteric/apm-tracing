@@ -23,7 +23,7 @@
 
     <build>
         <plugins>
-            <!-- 结构定制化的打包 -->
+            <!-- 结构定制化的打包，会在 target 目录下生成一个名为：apm-agent-${project.version}-jar-with-dependencies.jar 的 fatjar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -84,7 +84,7 @@
                                 <echo message="Copy package to dist dir"/>
                                 <mkdir dir="${project.basedir}/../apm-agent-dist" />
                                 <copy file="${project.build.directory}/apm-agent-${project.version}-jar-with-dependencies.jar"
-                                      tofile="${project.basedir}/../apm-agent-dist/apm-agent-${project.version}-jar-with-dependencies.jar"
+                                      tofile="${project.basedir}/../apm-agent-dist/apm-agent-${project.version}.jar"
                                       overwrite="true" />
                                 <mkdir dir="${project.basedir}/../apm-agent-dist/plugins" />
                             </target>

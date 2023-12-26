@@ -9,7 +9,7 @@ import java.util.List;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**
- * 类名匹配器：同时匹配多个类名相等的情况
+ * 多个类名匹配器：同时匹配多个类名相等的情况
  *
  * @author wangweijun
  * @version v1.0
@@ -17,17 +17,17 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class MultiClassNameMatcher implements IndirectMatcher {
 
-    private final List<String> classNames;
+    private final List<String> needMatchClassNames;
 
-    private MultiClassNameMatcher(String[] classNames) {
-        if (classNames == null) {
-            throw new IllegalArgumentException("class names cannot be null");
+    private MultiClassNameMatcher(String[] needMatchClassNames) {
+        if (needMatchClassNames == null) {
+            throw new IllegalArgumentException("Need match class names cannot be null");
         }
-        this.classNames = Arrays.asList(classNames);
+        this.needMatchClassNames = Arrays.asList(needMatchClassNames);
     }
 
     /**
-     * 要求是 or 的关系
+     * 多个类，要求是 or 的关系
      * 比如：named("xxx").or(named("yyy"))
      *
      * @return Junction<TypeDescription>
@@ -37,7 +37,7 @@ public class MultiClassNameMatcher implements IndirectMatcher {
     @Override
     public ElementMatcher.Junction<? super TypeDescription> buildJunction() {
         ElementMatcher.Junction<TypeDescription> junction = null;
-        for (String className : classNames) {
+        for (String className : needMatchClassNames) {
             if (junction == null) {
                 junction = named(className);
             } else {
@@ -49,10 +49,10 @@ public class MultiClassNameMatcher implements IndirectMatcher {
 
     @Override
     public boolean isMatch(TypeDescription typeDescription) {
-        return classNames.contains(typeDescription.getTypeName());
+        return needMatchClassNames.contains(typeDescription.getTypeName());
     }
 
-    public static IndirectMatcher byClassNames(String... classNames) {
-        return new MultiClassNameMatcher(classNames);
+    public static IndirectMatcher byClassNames(String... needMatchClassNames) {
+        return new MultiClassNameMatcher(needMatchClassNames);
     }
 }

@@ -1,13 +1,13 @@
 package io.github.thebesteric.framework.apm.agent.core.enhance;
 
 
-import io.github.thebesteric.framework.apm.agent.core.interceptor.ConstructorAfterInterceptor;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.StaticMethodsAroundInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.ConstructorInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.StaticMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.ConstructorMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.InstanceMethodsInterceptorPoint;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.point.StaticMethodsInterceptorPoint;
 import io.github.thebesteric.framework.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
-import io.github.thebesteric.framework.apm.agent.core.point.ConstructorMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.InstanceMethodsInterceptorPoint;
-import io.github.thebesteric.framework.apm.agent.core.point.StaticMethodsInterceptorPoint;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -32,14 +32,24 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  */
 public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePluginDefine {
 
+    /**
+     * 增强静态方法
+     *
+     * @param builder         builder
+     * @param typeDescription typeDescription
+     * @param classLoader     classLoader
+     * @return Builder<?>
+     * @author wangweijun
+     * @since 2023/9/20 00:36
+     */
     @Override
     protected DynamicType.Builder<?> enhanceClass(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader) {
-        // 获取静态拦截点
+        // 获取静态方法拦截点
         StaticMethodsInterceptorPoint[] staticMethodsInterceptorPoints = getStaticMethodsInterceptorPoints();
         if (staticMethodsInterceptorPoints == null || staticMethodsInterceptorPoints.length == 0) {
             return builder;
         }
-        // 增强构造方法
+        // 增强静态方法
         String typeName = typeDescription.getTypeName();
         for (StaticMethodsInterceptorPoint staticMethodsInterceptorPoint : staticMethodsInterceptorPoints) {
             String methodInterceptor = staticMethodsInterceptorPoint.getMethodInterceptor();
@@ -50,12 +60,22 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
             ElementMatcher<MethodDescription> methodMatcher = staticMethodsInterceptorPoint.getMethodMatcher();
             builder = builder.method(isStatic().and(methodMatcher))
                     .intercept(MethodDelegation.withDefaultConfiguration()
-                            .to(new StaticMethodsAroundInterceptor(methodInterceptor, classLoader)));
-
+                            .to(new StaticMethodsInterceptor(methodInterceptor, classLoader)));
         }
         return builder;
     }
 
+    /**
+     * 增强实例方法和构造方法
+     *
+     * @param builder         builder
+     * @param typeDescription typeDescription
+     * @param classLoader     classLoader
+     * @param enhanceContext  enhanceContext
+     * @return Builder<?>
+     * @author wangweijun
+     * @since 2023/9/20 00:37
+     */
     @Override
     protected DynamicType.Builder<?> enhanceInstance(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, EnhanceContext enhanceContext) {
         // 获取构造方法或者实例方法拦截点
@@ -71,13 +91,13 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
 
         String typeName = typeDescription.getTypeName();
 
-        // 为字节码增加属性，对于同一个类，只需要执行一次
+        // 为字节码增加扩展属性，对于同一个类，只需要执行一次
         // typeDescription 不是 EnhancedInstance 的子类或实现类，并且没有设置扩展字段，就让 typeDescription 成为 EnhancedInstance 的子类
         if (!typeDescription.isAssignableTo(EnhancedInstance.class) && !enhanceContext.isObjectExtended()) {
-            builder = builder.defineField(CONTEXT_ATTR_NAME, Object.class, Opcodes.ACC_PRIVATE | Opcodes.ACC_VOLATILE)
+            builder = builder.defineField(CONTEXT_EXTEND_ATTR_NAME, Object.class, Opcodes.ACC_PRIVATE | Opcodes.ACC_VOLATILE)
                     // 成为 EnhancedInstance 的实现类，并提供 getter 和 setter 方法
                     .implement(EnhancedInstance.class)
-                    .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
+                    .intercept(FieldAccessor.ofField(CONTEXT_EXTEND_ATTR_NAME));
             // 设置为已添加扩展字段
             enhanceContext.objectExtendedCompleted();
         }
@@ -96,7 +116,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
                         // SuperMethodCall.INSTANCE.andThen 表示：在构造方法执行之后调用
                         .intercept(SuperMethodCall.INSTANCE.andThen(
                                 MethodDelegation.withDefaultConfiguration()
-                                        .to(new ConstructorAfterInterceptor(constructorInterceptor, classLoader)))
+                                        .to(new ConstructorInterceptor(constructorInterceptor, classLoader)))
                         );
             }
         }
@@ -112,7 +132,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
                 ElementMatcher<MethodDescription> methodMatcher = instanceMethodsInterceptorPoint.getMethodMatcher();
                 builder = builder.method(not(isStatic()).and(methodMatcher))
                         .intercept(MethodDelegation.withDefaultConfiguration()
-                                .to(new InstanceMethodsAroundInterceptor(methodInterceptor, classLoader)));
+                                .to(new InstanceMethodsInterceptor(methodInterceptor, classLoader)));
             }
         }
 

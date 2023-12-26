@@ -12,7 +12,7 @@ import io.github.thebesteric.framework.apm.agent.commons.domain.log.ExtendDynami
 import io.github.thebesteric.framework.apm.agent.commons.domain.log.HttpLog;
 import io.github.thebesteric.framework.apm.agent.commons.util.WebUtils;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
 import io.github.thebesteric.framework.apm.agent.plugins.domain.Extra;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ import java.lang.reflect.Proxy;
  * @since 2023-10-11 19:32:19
  */
 @Slf4j
-public class FeignInterceptor implements InstanceMethodsInterceptor {
+public class FeignInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes) {
         String watcherTag = DurationWatcher.start();

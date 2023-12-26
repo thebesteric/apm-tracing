@@ -30,19 +30,30 @@ public class ApmTransformer implements AgentBuilder.Transformer {
         this.pluginFinder = pluginFinder;
     }
 
-    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule) {
+    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
+                                            TypeDescription typeDescription,
+                                            ClassLoader classLoader,
+                                            JavaModule javaModule) {
         return transform(builder, typeDescription, classLoader, javaModule, null);
     }
 
     @Override
-    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule, @MaybeNull ProtectionDomain protectionDomain) {
+    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder,
+                                            TypeDescription typeDescription,
+                                            ClassLoader classLoader,
+                                            JavaModule javaModule,
+                                            @MaybeNull ProtectionDomain protectionDomain) {
+
         String actualClassName = typeDescription.getActualName();
-        LoggerPrinter.info(log, "actualClassName to transform: {}", actualClassName);
+        LoggerPrinter.info(log, "ActualClassName to transform: {}", actualClassName);
 
         List<AbstractClassEnhancePluginDefine> pluginDefiners = pluginFinder.find(typeDescription);
         if (!pluginDefiners.isEmpty()) {
             DynamicType.Builder<?> newBuilder = builder;
+
+            // 定义上下文，一个 enhanceContext 对应一个 typeDescription
             EnhanceContext enhanceContext = new EnhanceContext();
+
             for (AbstractClassEnhancePluginDefine pluginDefiner : pluginDefiners) {
                 DynamicType.Builder<?> possibleBuilder = pluginDefiner.define(newBuilder, typeDescription, classLoader, enhanceContext);
                 if (possibleBuilder != null) {
@@ -50,13 +61,14 @@ public class ApmTransformer implements AgentBuilder.Transformer {
                 }
             }
 
+            // 增强完成
             if (enhanceContext.isEnhanced()) {
                 LoggerPrinter.debug(log, "Finished enhance for {}", typeDescription.getTypeName());
             }
             return newBuilder;
         }
 
-        LoggerPrinter.warn(log, "匹配到了类: {}, 但是未找到相关插件", actualClassName);
+        LoggerPrinter.warn(log, "Matched class: {}, but can not find plugin", actualClassName);
         return builder;
     }
 }

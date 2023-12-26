@@ -7,7 +7,7 @@ A non-intrusive full link log plug-in
 # Quick Start
 The javaagent technology is used to complete the log link
 ```bash
-java -javaagent:/xxx/xxx/apm-agent-{version}-jar
+java -javaagent:/xxx/xxx/apm-agent-{version}.jar
 ```
 ## Used plugins
 If you want to use certain plug-in features, create a plugins directory in your project and add the required plug-ins to the plugins directory

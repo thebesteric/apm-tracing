@@ -34,9 +34,9 @@ public class AgentPackagePath {
 
     private static File doGetPath() {
         // xx/xx/xx/AgentPackagePath
-        String classResourcePath = AgentPackagePath.class.getName().replaceAll("\\.", "/") + ".class";
-        // file:/IdeaProjects/apm-agent-dist/target/classes/xx/xx/xx/AgentPackagePath.class
-        // jar:file:/IdeaProjects/apm-agent-dist/apm-agent-1.0-SNAPSHOT-jar-with-dependencies.jar!/xx/xx/xx/AgentPackagePath.class
+        String classResourcePath = AgentPackagePath.class.getName().replace(".", "/") + ".class";
+        // resource = file:/IdeaProjects/apm-agent-dist/target/classes/xx/xx/xx/AgentPackagePath.class
+        // resource = jar:file:/IdeaProjects/apm-agent-dist/apm-agent-1.0-SNAPSHOT-jar-with-dependencies.jar!/xx/xx/xx/AgentPackagePath.class
         URL resource = ClassLoader.getSystemClassLoader().getResource(classResourcePath);
         if (resource != null) {
             String location = resource.toString();

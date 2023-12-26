@@ -1,84 +1,56 @@
 package io.github.thebesteric.framework.apm.agent.core.interceptor;
 
-import io.github.thebesteric.framework.apm.agent.commons.LoggerPrinter;
-import io.github.thebesteric.framework.apm.agent.core.enhance.CleanerContext;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
-import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
-import io.github.thebesteric.framework.apm.agent.core.loader.InterceptorInstanceLoader;
-import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.implementation.bind.annotation.*;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.support.InstanceMethodLogSupport;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.Callable;
 
 /**
- * 实例方法拦截器
+ * 实例方法的的拦截器必须实现这个接口
  *
  * @author wangweijun
- * @since 2023/9/20 01:05
+ * @version v1.0
+ * @since 2023-09-21 00:34:22
  */
-@Slf4j
-public class InstanceMethodsAroundInterceptor {
-
-    private InstanceMethodsInterceptor instanceMethodsInterceptor;
+public interface InstanceMethodsAroundInterceptor extends InstanceMethodLogSupport {
 
     /**
-     * 构造方法
+     * 前置通知
      *
-     * @param interceptor InstanceMethodsAroundInterceptor 的实现类
-     * @param classLoader 类加载器
+     * @param instance 实例
+     * @param method   方法
+     * @param args     参数
+     * @param argTypes 参数类型
      * @author wangweijun
-     * @since 2023/9/21 00:34:24
+     * @since 2023/9/20 01:10
      */
-    public InstanceMethodsAroundInterceptor(String interceptor, ClassLoader classLoader) {
-        try {
-            instanceMethodsInterceptor = InterceptorInstanceLoader.load(interceptor, classLoader);
-        } catch (Exception e) {
-            LoggerPrinter.error(log, "Cannot load interceptor: {}", interceptor, e);
-        }
-    }
+    void beforeMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes);
 
-    @RuntimeType
-    public Object intercept(@This Object target,
-                            @Origin Method targetMethod,
-                            @AllArguments Object[] targetMethodArgs,
-                            @SuperCall Callable<?> call) throws Exception {
-        // 强转
-        EnhancedInstance enhancedInstance = (EnhancedInstance) target;
+    /**
+     * 后置通知，无论是否出现异常都会执行
+     *
+     * @param instance 实例
+     * @param method   方法
+     * @param args     参数
+     * @param argTypes 参数类型
+     * @param result   返回值
+     * @return Object
+     * @author wangweijun
+     * @since 2023/9/20 01:10
+     */
+    Object afterMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes, Object result);
 
-        // 初始化相关信息
-        IdentifierContext.initialize(targetMethod);
-
-        // 前置通知
-        try {
-            instanceMethodsInterceptor.beforeMethod(enhancedInstance, targetMethod, targetMethodArgs, targetMethod.getParameterTypes());
-        } catch (Exception ex) {
-            LoggerPrinter.error(log, "class {} before instance method {} interceptor failure", target.getClass(), targetMethod.getName(), ex);
-        }
-
-        Object result = null;
-        try {
-            result = call.call();
-        } catch (Exception ex) {
-            // 异常通知
-            try {
-                instanceMethodsInterceptor.handleException(enhancedInstance, targetMethod, targetMethodArgs, targetMethod.getParameterTypes(), result, ex);
-            } catch (Exception e) {
-                LoggerPrinter.error(log, "class {} execute instance method {} interceptor failure", target.getClass(), targetMethod.getName(), e);
-            }
-            throw ex;
-        } finally {
-            // 最终通知
-            try {
-                result = instanceMethodsInterceptor.afterMethod(enhancedInstance, targetMethod, targetMethodArgs, targetMethod.getParameterTypes(), result);
-            } catch (Exception ex) {
-                LoggerPrinter.error(log, "class {} after instance method {} interceptor failure", target.getClass(), targetMethod.getName(), ex);
-            }
-            // 清理
-            CleanerContext.cleanup();
-        }
-
-        return result;
-    }
-
+    /**
+     * 前置通知
+     *
+     * @param instance  实例
+     * @param method    方法
+     * @param args      参数
+     * @param argTypes  参数类型
+     * @param result    返回值
+     * @param throwable 异常
+     * @author wangweijun
+     * @since 2023/9/20 01:10
+     */
+    void handleException(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes, Object result, Throwable throwable);
 }

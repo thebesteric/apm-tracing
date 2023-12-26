@@ -1,4 +1,4 @@
-package io.github.thebesteric.framework.apm.agent.core.point;
+package io.github.thebesteric.framework.apm.agent.core.interceptor.point;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;

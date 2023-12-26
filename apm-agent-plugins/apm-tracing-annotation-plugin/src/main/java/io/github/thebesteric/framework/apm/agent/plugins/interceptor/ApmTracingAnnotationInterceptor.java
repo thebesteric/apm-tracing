@@ -9,7 +9,7 @@ import io.github.thebesteric.framework.apm.agent.commons.domain.log.ExtendDynami
 import io.github.thebesteric.framework.apm.agent.commons.util.WebUtils;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
 import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
 import io.github.thebesteric.framework.apm.agent.plugins.domain.ApmTracingInfo;
 import io.github.thebesteric.framework.apm.agent.plugins.parser.AmpTracingAnnotationParser;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 2023-09-28 11:22:45
  */
 @Slf4j
-public class ApmTracingAnnotationInterceptor implements InstanceMethodsInterceptor {
+public class ApmTracingAnnotationInterceptor implements InstanceMethodsAroundInterceptor {
 
     private static final String CONTROLLER_NAME = "org.springframework.stereotype.Controller";
     private static final String REST_CONTROLLER_NAME = "org.springframework.web.bind.annotation.RestController";

@@ -12,7 +12,7 @@ import io.github.thebesteric.framework.apm.agent.commons.domain.log.HttpLog;
 import io.github.thebesteric.framework.apm.agent.commons.util.WebUtils;
 import io.github.thebesteric.framework.apm.agent.core.enhance.EnhancedInstance;
 import io.github.thebesteric.framework.apm.agent.commons.IdentifierContext;
-import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsInterceptor;
+import io.github.thebesteric.framework.apm.agent.core.interceptor.InstanceMethodsAroundInterceptor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * @since 2023-10-11 13:57:12
  */
 @Slf4j
-public class OkHttp3Interceptor implements InstanceMethodsInterceptor {
+public class OkHttp3Interceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance instance, Method method, Object[] args, Class<?>[] argTypes) {
         String watcherTag = DurationWatcher.start();

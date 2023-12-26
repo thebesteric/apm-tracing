@@ -18,10 +18,12 @@ public class EnhanceContext {
     // 是否扩展了自定义属性 CONTEXT_ATTR_FIELD
     private boolean objectExtended = false;
 
+    // 初始化阶段完成
     public void initializationStageCompleted() {
         enhanced = true;
     }
 
+    // 定义扩展字段完成
     public void objectExtendedCompleted() {
         objectExtended = true;
     }

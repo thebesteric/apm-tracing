@@ -44,8 +44,10 @@ public class ExecuteInfo implements Serializable {
 
     private ExecuteInfo(Method method, Object[] args, DurationWatcher.DurationInfo durationInfo) {
         this(method, args);
-        this.executeTime = new Date(durationInfo.getStartTime());
-        this.duration = durationInfo.getDuration();
+        if (durationInfo != null) {
+            this.executeTime = new Date(durationInfo.getStartTime());
+            this.duration = durationInfo.getDuration();
+        }
     }
 
     public static Builder builder(Method method, Object[] args, DurationWatcher.DurationInfo durationInfo) {

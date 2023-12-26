@@ -42,6 +42,9 @@ public class DurationWatcher {
     public static DurationInfo stop(String tag) {
         Map<String, DurationInfo> durationInfos = DURATION_THREAD_LOCAL.get();
         DurationInfo durationInfo = durationInfos.get(tag);
+        if (durationInfo == null) {
+            return null;
+        }
         durationInfo.setEndTime(System.currentTimeMillis());
         remove(tag);
         return durationInfo;

@@ -19,14 +19,4 @@ public interface IndirectMatcher extends ClassMatcher {
      * @since 2023/9/19 00:36
      */
     ElementMatcher.Junction<? super TypeDescription> buildJunction();
-
-    /**
-     * 是否匹配类名
-     *
-     * @param typeDescription 需要判断的类
-     * @return boolean
-     * @author wangweijun
-     * @since 2023/9/19 16:49
-     */
-    boolean isMatch(TypeDescription typeDescription);
 }
